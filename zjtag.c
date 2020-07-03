@@ -1840,7 +1840,7 @@ static void run_backup(char *filename, DWORD start, DWORD length)
 //  DWORD prolen = start;
   
   struct tm* lt = localtime(&start_time);
-  char time_str[15];
+  char time_str[100];
 
   sprintf(time_str, "%04d%02d%02d_%02d%02d%02d",
           lt->tm_year + 1900, lt->tm_mon + 1, lt->tm_mday,
@@ -2006,8 +2006,9 @@ if (cable_intf && !safemode )
       if (issue_erase)
         {
           for(i=0;i<LL8;i++ )
+          {
            if (blkbuffer[i] != 0xFFFFFFFF) {wflag = 1; break;}
-           	
+          }
            if(wflag)  ilen = cable_prop->sflash_blkwrite(addr, blkbuffer, ilen,  prg_x8 );  //write block, get actual write
            wflag = 0;
         }
@@ -2370,7 +2371,7 @@ static void sflash_probe(void)
           if (chip_ver <0x3130 ) goto cfi_exit;
          chip_features = cfi_pri_data.Features;
          if (!silent_mode)  printf("\nFlash Full Chip Erase Supported: %s\n", (chip_features & FULL_CHIP_ERASE)?"Yes" : "No");
-        }else goto cfi_exit;
+        }else { goto cfi_exit; }
 	      break;
 
 	   case P_ID_AMD_STD:

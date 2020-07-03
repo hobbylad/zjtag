@@ -25,6 +25,8 @@
 #include "busbasp.h"    
 #include "libusb.h"
 
+extern DWORD rev_endian(DWORD);
+
 
 #define DEBUGFLUSH 0
 #define DEBUGTXBUF 0

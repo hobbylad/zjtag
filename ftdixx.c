@@ -29,6 +29,9 @@
 #endif
 
 #include "ftdixx.h"
+#include <string.h>
+
+extern DWORD rev_endian(DWORD);
 
 #define CHECK_WRITE 1 // whether to check the write date inline
 
@@ -956,7 +959,7 @@ int ftinit(void *p)
 				 printf(" LocId=0x%x\n",devInfo[i].LocId); 
 				 printf(" SerialNumber=%s\n",devInfo[i].SerialNumber); 
 				 printf(" Description=%s\n",devInfo[i].Description); 
-				 printf(" ftHandle=0x%x\n",devInfo[i].ftHandle); 
+				 printf(" ftHandle=0x%p\n",devInfo[i].ftHandle); 
 
 	  		if(devInfo[i].ID == USBID && strstr(devInfo[i].Description," A")>0) 
 					{ 
@@ -1200,7 +1203,7 @@ DWORD ftReadData(void)
   else
     {
     	dd = RxDataBuffer[0];
-    	if (DEBUGMSG)  DBG((">>>FT Rd data =0x%08X\n", dd));
+        if (DEBUGMSG) {  DBG((">>>FT Rd data =0x%08X\n", dd)) };
   	  return dd;
   	}
 }
@@ -1306,7 +1309,7 @@ DWORD ft_dma_blkfetch(DWORD addr, DWORD txdata, int mode, int dmadir, int* opdir
 	{
      if( RWdir == XFER_TX )
      	{	 
-      if (DEBUGFETCH) DBG(("add queue dir TX\n\n"));
+      if (DEBUGFETCH) { DBG(("add queue dir TX\n\n")); }
 
        //R/W
        //1  set_instr(INSTR_ADDRESS);	

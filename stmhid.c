@@ -25,6 +25,7 @@
 #include "stmhid.h"    
 #include "libusb.h"
 
+extern DWORD rev_endian(DWORD);
 
 #define DEBUGFLUSH 0
 #define DEBUGTXBUF 0
@@ -540,7 +541,7 @@ int st_sflash_blkwrite(DWORD Inaddr, DWORD* pbuff, int len, int flpg_x8)
   WORD  *dl;
   int cnt;
   int  ilen;
-  static iii=0;
+  static int iii=0;
   
     ilen = LL8;
     if (ilen>200) ilen = 200;  // supported max x16 mode DWORD number, guarentee buffer not overflow.

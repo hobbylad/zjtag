@@ -37,6 +37,7 @@ typedef int               bool;
 
 
 #include "libusb.h"
+#include <stdio.h>
 
 #define MATCH_SUCCESS			1
 #define MATCH_FAILED			0
@@ -384,7 +385,7 @@ typedef struct usbRequest{
 int libusb_msg_read(int cmd, int value, int index, BYTE* buf, int bytelen)
 {
 	
-	return _usb_control_msg(handle, USB_TYPE_VENDOR | USB_RECIP_DEVICE | USB_ENDPOINT_IN, cmd, value, index, buf, bytelen, usb_timeout);
+	return _usb_control_msg(handle, USB_TYPE_VENDOR | USB_RECIP_DEVICE | USB_ENDPOINT_IN, cmd, value, index, (char*) buf, bytelen, usb_timeout);
 	
 }
 
@@ -392,7 +393,7 @@ int libusb_msg_read(int cmd, int value, int index, BYTE* buf, int bytelen)
 int libusb_msg_write(int cmd, int value, int index, BYTE* buf, int bytelen)
 {
 
-	return _usb_control_msg(handle, USB_TYPE_VENDOR | USB_RECIP_DEVICE | USB_ENDPOINT_OUT,  cmd, value, index, buf, bytelen, usb_timeout);
+	return _usb_control_msg(handle, USB_TYPE_VENDOR | USB_RECIP_DEVICE | USB_ENDPOINT_OUT,  cmd, value, index, (char*) buf, bytelen, usb_timeout);
 	
 }
 

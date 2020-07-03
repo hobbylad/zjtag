@@ -23,7 +23,9 @@
 #include "zjtag.h" 
 #include "j-link.h"    
 #include "libusb.h"
+#include <string.h>
 
+extern DWORD rev_endian(DWORD);
 
 #define DEBUGFLUSH 0
 #define DEBUGTXBUF 0
@@ -206,7 +208,9 @@ static int JL_scan_blk (int BlkIndex )
         	 	}
            if (blkbitlen>48) blkbitlen = 48;  //4us in 12MHz
            for (ii = 0; ii < blkbitlen; ii++)
+           {
             st_buf |= JL_scan_oneclk( 0, 0 );  //wait in RTI
+           }
             gTxFlushingIndex++;
     if (DEBUGBLK)
    	  {
@@ -796,7 +800,7 @@ DWORD jlset_instr( DWORD instr)
 
   JL_AddBlkToTxDataBuffer( instr, TAP_IR, instruction_length,1);
   if (JL_scan_xfer())
-   printf("setinstr:flushing tx buffer error!\n");
+   {printf("setinstr:flushing tx buffer error!\n");}
 
    if(gRxDataBufferIndex > 0) 
     {dd = RxDataBuffer; 
@@ -954,7 +958,7 @@ DWORD JL_dma_blkfetch(DWORD addr, DWORD txdata, int mode, int dmadir, int* opdir
 	{
      if( RWdir == XFER_TX )
      	{	 
-      if (DEBUGFETCH) DBG(("add queue dir TX\n\n"));
+      if (DEBUGFETCH) { DBG(("add queue dir TX\n\n")); }
 
        //R/W
        //1  set_instr(INSTR_ADDRESS);

@@ -288,7 +288,7 @@ typedef struct _cable_prop_type
   DWORD feature;
   void (*close)(void);
   void (*test_reset)(void);
-  int (*det_instr)(void);
+  DWORD (*det_instr)(void);
   DWORD (*set_instr)(DWORD instr);
   DWORD (*ReadWriteData)(DWORD in_data);
   DWORD (*ReadData)(void);

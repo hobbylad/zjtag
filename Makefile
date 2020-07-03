@@ -1,6 +1,6 @@
 
 #CFLAGS = -Wall -O2 -I. -I./lnx
-CFLAGS = -Wall -g -I. -I./lnx
+CFLAGS = -Wall -Wno-unused-function -Wno-unused-variable -Wno-unused-but-set-variable -g -I. -I./lnx
 
 #gcc link to *.so & *.a libs
 #app running needs *.so.0 libs
