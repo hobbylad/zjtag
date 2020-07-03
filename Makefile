@@ -10,10 +10,10 @@ CFLAGS = -Wall -Wno-unused-function -Wno-unused-variable -Wno-unused-but-set-var
 #add lib curses for getch()    -lcurses
 
 DL_PATH = -Wl,-rpath /usr/local/lib
-L_LIBS = -L/usr/local/lib -lftd2xx -lusb -ldl -lrt
+L_LIBS = -L/usr/local/lib -lftd2xx -lusb -ldl -lrt -lbcm2835
 S_LIBS = lnx/libftd2xx.a lnx/libusb.a -ldl -lpthread -lrt
 
-OBJS = zjtag.o busbasp.o ftdixx.o j-link.o libusb.o stmhid.o
+OBJS = zjtag.o busbasp.o ftdixx.o j-link.o libusb.o stmhid.o rpi.o
 
 
 all: zjtag zjtag.a

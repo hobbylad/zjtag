@@ -71,6 +71,8 @@
 #include <string.h>
 #include <time.h>
 
+#include "rpi.h"
+
 #ifndef WINDOWS_VERSION
 // extern int getch(void);
 #endif
@@ -235,6 +237,7 @@ extern int ftinit(void *);
 extern int jlinit(void *);
 extern int uinit(void *);
 extern int stinit(void *);
+extern int rpinit(void *);
 cable_list_type cable_list[]={
  {0, FT2232H , 0x04038A98, 1, ftinit ,"TIAO USB Multi-Protocol Adapter (TUMPA)" },
  {1, XILINX  , 0         , 0, 0      ,"TIAO All In One/20/10 PIN JTAG cable (XILINX)" },  
@@ -245,6 +248,7 @@ cable_list_type cable_list[]={
  {6, JLINK   , 0x13660101, 1, jlinit ,"SEGGER J-Link EMU"     },
  {7, USBASP  , 0x16C005DF, 1, uinit  ,"HID-BRJTAG v1.xx(USBASP)" },
  {8, STM32   , 0x04835750, 1, stinit ,"HID-BRJTAG v2.xx(STM32F10x/SAM7S)" },
+ {9, RASPPI  , 0         , 0, 0      ,"Raspberry Pi GPIO JTAG" },
  
  {-1,0,0,0,0,0}};       //list end with id =-1
 
@@ -755,6 +759,18 @@ static BYTE clockin(int tms, int tdi)
            data ^= WI_INV;      // invert bit 7
            data >>= WTDO;       // shift bit 7 to bit 0
            data &= 1;           // get bit 0 output
+           break;
+        case RASPPI:
+           data = ((1 << WTDO) | (0 << WTCK) | (tms << WTMS) | (tdi << WTDI)) ^ WO_INV;
+           rpi_outp(data);
+           if(ejtag_speed) ussleep(1);
+           data = ((1 << WTDO) | (1 << WTCK) | (tms << WTMS) | (tdi << WTDI)) ^ WO_INV;
+           rpi_outp(data);
+           if(ejtag_speed) ussleep(1);      //LPT port ECP mode max speed up to 2.5MHz, add 2us delay limit to 500KHz
+           data = rpi_inp();    // output inversed bit 7
+           data ^= WI_INV;      // invert bit 7
+           data >>= WTDO;       // shift bit 7 to bit 0
+           data &= 1;           // get bit 0 output
            break;      
 
 		case BLACKCAT:    //blackcat
@@ -804,6 +820,13 @@ static void lpt_srst(void)
            mssleep(10);  //hold reset line 10ms
            data = (0) ^ WO_INV;
            _OUTP(data);
+           break;
+        case RASPPI:
+           data = (1 << WSRST_N  ) ^ WO_INV;
+           rpi_outp(data);
+           mssleep(10);  //hold reset line 10ms
+           data = (0) ^ WO_INV;
+           rpi_outp(data);
 
            break;      
 
@@ -1595,7 +1618,16 @@ static void chip_shutdown(void)
   fflush(stdout);
   test_reset();
   if (!cable_intf)
+  {
+    if (cable_id == 9)
+    {
+      rpi_close();
+    }
+    else
+    {
   	 lpt_closeport();
+    }
+  }
   else
      cable_prop->close();
 }
@@ -3472,8 +3504,14 @@ int main(int argc, char** argv)
   if(force_nodma) safemode = 1;
   if (!cable_intf)
   {
+    if (cable_id == 9)
+    {
+      rpi_open();
+    }
+    else
+    {
     lpt_openport();
-  
+    }
   }
   else
    { 

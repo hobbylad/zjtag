@@ -171,6 +171,7 @@
 #define STM32     5
 #define JLINK     6
 #define FT2232D   7
+#define RASPPI    8
 
 // --- Some EJTAG Instruction Registers ---
 #define INSTR_EXTEST    0x00
